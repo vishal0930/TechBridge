@@ -7,7 +7,7 @@ const make = (max, windowMinutes) =>
     windowMs: windowMinutes * 60 * 1000,
     standardHeaders: true,
     legacyHeaders: false,
-    message: { error: '429 Too Many Requests — slow down' },
+    message: { error: 'Too many login attempts. Please try again after 15 minutes' },
   });
 
 export const authLimiter        = make(5,   15);   // 5  / 15 min
