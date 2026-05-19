@@ -8,14 +8,45 @@ import { transactionLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 
-// All transaction routes require a valid JWT
+
+
+// Protect all routes
 router.use(verifyToken, transactionLimiter);
 
-router.get(  '/',        txController.getAll);
-router.get(  '/export',  authorizeRoles('admin', 'user'), txController.exportCSV);
-router.get(  '/:id',     txController.getOne);
-router.post( '/',        authorizeRoles('admin', 'user'), transactionRules,       validate, txController.create);
-router.patch('/:id',     authorizeRoles('admin', 'user'), transactionUpdateRules, validate, txController.update);
-router.delete('/:id',    authorizeRoles('admin', 'user'), txController.remove);
+router.get('/', txController.getAll);
+
+router.get(
+  '/export',
+  authorizeRoles('admin', 'user'),
+  txController.exportCSV
+);
+
+router.get('/:id', txController.getOne);
+
+// CREATE → admin + user
+router.post(
+  '/',
+  authorizeRoles('admin', 'user'),
+  transactionRules,
+  validate,
+  txController.create
+);
+
+// UPDATE → admin only
+router.patch(
+  '/:id',
+  authorizeRoles('admin'),
+  transactionUpdateRules,
+  validate,
+  txController.update
+);
+
+// DELETE → admin only
+router.delete(
+  '/:id',
+  authorizeRoles('admin'),
+  txController.remove
+);
+
 
 export default router;
